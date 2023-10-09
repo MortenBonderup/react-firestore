@@ -8,9 +8,10 @@ function App() {
   const [data, setData] = useState([]);
   const [vare, setVare] = useState("");
   const [pris, setPris] = useState(0);
+  const [sorteringsFelt, setSorteringsFelt] = useState("vare")
 
   /*
-    Komponenten bruger useEffect til at hente data fra en Firebase Firestore-database. OnSnapshot-metoden lytter til ændringer i "shoppingliste"-samlingen og opdaterer komponentens tilstand med de nye data. FetchData-funktionen er en asynkron funktion, der henter dataene fra databasen og skubber dem ind i et array kaldet docs. ForEach-metoden bruges til at iterere over hvert dokument i dataene og skubbe det ind i docs-arrayet som et objekt med to egenskaber: id og data. Til sidst kaldes setData-metoden for at opdatere komponentens tilstand med de nye data. Det tomme array, der sendes som et andet argument til useEffect, sikrer, at denne effekt kun kører én gang, når komponenten monteres.
+    Komponenten bruger useEffect til at hente data fra en Firebase Firestore-database. OnSnapshot-metoden lytter til ændringer i "shoppingliste"-samlingen og opdaterer komponentens tilstand med de nye data. FetchData-funktionen er en asynkron funktion, der henter dataene fra databasen og skubber dem ind i et array kaldet docs. ForEach-metoden bruges til at iterere over hvert dokument i dataene og skubbe det ind i docs-arrayet som et objekt med to egenskaber: id og data. Data sorteres efter valgte sorteringsfelt. Til sidst kaldes setData-metoden for at opdatere komponentens tilstand med de nye data. useEffect køres hver gang sorteringsfeltet ændres.
   */
   useEffect(() => {
     async function fetchData() {
@@ -20,11 +21,22 @@ function App() {
           docs.push({ id: doc.id, ...doc.data() });
         });
         console.log("useEffect");
+
+        docs.sort(function (a, b) {
+          if (a[sorteringsFelt] < b[sorteringsFelt]) {
+            return -1;
+          }
+          if (a[sorteringsFelt] > b[sorteringsFelt]) {
+            return 1;
+          }
+          return 0;
+        });
+
         setData(docs);
       });
     }
     fetchData();
-  }, []);
+  }, [sorteringsFelt]);
 
   /*
   Koden herunder definerer en asynkron funktion opretVare, som tager et hændelsesobjekt ind som en parameter. Funktionen kaldes, når en formular sendes, og forhindrer hændelsens standardadfærd i at blive udført ved at kalde preventDefault() på hændelsesobjektet.
@@ -65,17 +77,30 @@ function App() {
       console.error("FEJL - kunne ikke slette dokument: ", e);
     }
   }
+
+
+  // De følgende to funktioner skifter sorteringsfelt.
+  function sorterEfterVare() {
+    setSorteringsFelt("vare");
+  }
+
+  function sorterEfterPris() {
+    setSorteringsFelt("pris");
+  }
+
   /*
   Koden herunder definerer en komponent, der viser en indkøbsliste og en formular til tilføjelse af nye varer til listen.
-  
+   
   Komponenten bruger dataarrayet til at generere en liste over varer på indkøbslisten ved hjælp af kortmetoden. Hver vare vises som en listepost med navn og pris, samt en knap til at slette varen fra listen. Knappen har en onClick-hændelse, der kalder sletVare-funktionen.
-  
+   
   Formularen til at tilføje nye elementer til listen bruger hændelsen onSubmit til at kalde funktionen opretVare. Formularen har to tekstfelter til at tilføje navn og pris på varen, samt en knap til at tilføje varen til listen.
-  
+   
   Begge funktioner opretVare og sletVare er defineret tidligere i koden og bruges til at tilføje eller slette elementer fra databasen.
   */
   return (
     <div>
+      <button type="button" onClick={sorterEfterPris}>Sorter efter pris</button>
+      <button type="button" onClick={sorterEfterVare}>Sorter efter vare</button>
       <h2>Shoppingliste:</h2>
       <ul>
         {data.map((item) => (
