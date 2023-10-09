@@ -27,7 +27,7 @@ function App() {
   }, []);
 
   /*
-  Koden definerer en asynkron funktion opretVare, som tager et hændelsesobjekt ind som en parameter. Funktionen kaldes, når en formular sendes, og forhindrer hændelsens standardadfærd i at blive udført ved at kalde preventDefault() på hændelsesobjektet.
+  Koden herunder definerer en asynkron funktion opretVare, som tager et hændelsesobjekt ind som en parameter. Funktionen kaldes, når en formular sendes, og forhindrer hændelsens standardadfærd i at blive udført ved at kalde preventDefault() på hændelsesobjektet.
   
   Funktionen opretter et objekt nyvare med to egenskaber: vare og pris
   
@@ -50,11 +50,10 @@ function App() {
   }
 
   /*
-  Koden definerer en asynkron funktion sletVare, som tager et hændelsesobjekt som en parameter. Funktionen henter data-id-attributten fra hændelsesobjektet og gemmer den i variablen itemId.
+  Koden herunder definerer en asynkron funktion sletVare, som tager et hændelsesobjekt som en parameter. Funktionen henter data-id-attributten fra hændelsesobjektet og gemmer den i variablen itemId.
   
   Derefter forsøger funktionen at slette dokumentet med ID itemId fra databasen ved hjælp af deleteDoc-funktionen fra Firebase Firestore. Hvis det lykkes, vil funktionen logge en besked til konsollen, der angiver, at elementet blev slettet. Hvis der opstår en fejl, vil funktionen logge en fejlmeddelelse til konsollen, der angiver, at dokumentet ikke kunne slettes, og giver information om fejlen.
   */
-
   async function sletVare(e) {
     const vareId = e.currentTarget.getAttribute("data-id");
 
@@ -67,7 +66,7 @@ function App() {
     }
   }
   /*
-  Koden definerer en komponent, der viser en indkøbsliste og en formular til tilføjelse af nye varer til listen.
+  Koden herunder definerer en komponent, der viser en indkøbsliste og en formular til tilføjelse af nye varer til listen.
   
   Komponenten bruger dataarrayet til at generere en liste over varer på indkøbslisten ved hjælp af kortmetoden. Hver vare vises som en listepost med navn og pris, samt en knap til at slette varen fra listen. Knappen har en onClick-hændelse, der kalder sletVare-funktionen.
   
