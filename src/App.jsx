@@ -11,7 +11,7 @@ function App() {
   const [sorteringsFelt, setSorteringsFelt] = useState("vare")
 
   /*
-    Komponenten bruger useEffect til at hente data fra en Firebase Firestore-database. OnSnapshot-metoden lytter til ændringer i "shoppingliste"-samlingen og opdaterer komponentens tilstand med de nye data. FetchData-funktionen er en asynkron funktion, der henter dataene fra databasen og skubber dem ind i et array kaldet docs. ForEach-metoden bruges til at iterere over hvert dokument i dataene og skubbe det ind i docs-arrayet som et objekt med to egenskaber: id og data. Data sorteres efter valgte sorteringsfelt. Til sidst kaldes setData-metoden for at opdatere komponentens tilstand med de nye data. useEffect køres hver gang sorteringsfeltet ændres.
+    Komponenten bruger useEffect til at hente data fra en Firebase Firestore-database. OnSnapshot-metoden lytter til ændringer i "shoppingliste"-samlingen og opdaterer komponentens tilstand med de nye data. FetchData-funktionen er en asynkron funktion, der henter dataene fra databasen og skubber dem ind i et array kaldet docs. ForEach-metoden bruges til at iterere over hvert dokument i dataene og skubbe det ind i docs-arrayet som et objekt med to egenskaber: id og data. Til sidst kaldes setData-metoden for at opdatere komponentens tilstand med de nye data. useEffect køres hver gang sorteringsfeltet ændres.
   */
   useEffect(() => {
     async function fetchData() {
@@ -22,21 +22,27 @@ function App() {
         });
         console.log("useEffect");
 
-        docs.sort(function (a, b) {
-          if (a[sorteringsFelt] < b[sorteringsFelt]) {
-            return -1;
-          }
-          if (a[sorteringsFelt] > b[sorteringsFelt]) {
-            return 1;
-          }
-          return 0;
-        });
-
         setData(docs);
       });
     }
     fetchData();
-  }, [sorteringsFelt]);
+  }, []);
+
+  // Jeg opretter en sorteret dataliste som jeg viser til brugeren.
+  const sorteretdata = [...data];
+
+  // Her sorterer jeg datalisten på pris eller vare (afhængig af værdien af sorteringsFelt)
+  sorteretdata.sort(function (a, b) {
+    if (a[sorteringsFelt] < b[sorteringsFelt]) {
+      return -1;
+    }
+    if (a[sorteringsFelt] > b[sorteringsFelt]) {
+      return 1;
+    }
+    return 0;
+  });
+
+  // Her er det slut med sorteringen
 
   /*
   Koden herunder definerer en asynkron funktion opretVare, som tager et hændelsesobjekt ind som en parameter. Funktionen kaldes, når en formular sendes, og forhindrer hændelsens standardadfærd i at blive udført ved at kalde preventDefault() på hændelsesobjektet.
@@ -103,7 +109,7 @@ function App() {
       <button type="button" onClick={sorterEfterVare}>Sorter efter vare</button>
       <h2>Shoppingliste:</h2>
       <ul>
-        {data.map((item) => (
+        {sorteretdata.map((item) => (
           <li key={item.id} style={{ "listStyleType": "none" }}>
             <span style={{ "marginRight": "10px" }}>{item.vare}</span>
             <span style={{ "marginRight": "10px" }}>{item.pris}</span>
